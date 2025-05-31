@@ -1,0 +1,325 @@
+@import "tailwindcss";
+
+/* Base resets */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root,
+.app {
+  height: 100%;
+  width: 100%;
+  font-size: var(--text-sm);
+  background: var(--color-white);
+}
+
+.dark .app {
+  background: var(--color-black);
+}
+
+/* Design Tokens */
+@layer base {
+  :root {
+    --text-sm: 0.875rem;
+    --text-xs: 0.75rem;
+    --radius: 0.5rem;
+    --radius-lg: 0.5rem;
+    --spacing-2: 0.5rem;
+    --spacing-3: 0.75rem;
+    --spacing-5: 1.25rem;
+    --spacing-8: 2rem;
+    --color-white: #fff;
+    --color-black: #000;
+    --color-blue-300: #93c5fd;
+
+    /* Primary Palette */
+    --primary-50: #fcfcfc;
+    --primary-100: #f1f1f2;
+    --primary-200: #e0e0e2;
+    --primary-300: #c7c7cc;
+    --primary-400: #a8a8af;
+    --primary-500: #82828b;
+    --primary-600: #57575f;
+    --primary-700: #27272a;
+    --primary-800: #111113;
+    --primary-900: #040405;
+    --primary-950: #000000;
+
+    /* Secondary Palette */
+    --secondary-50: #fefcfc;
+    --secondary-100: #fdf2f2;
+    --secondary-200: #fae1e1;
+    --secondary-300: #f6c9c9;
+    --secondary-400: #f1abab;
+    --secondary-500: #eb8686;
+    --secondary-600: #e45a5a;
+    --secondary-700: #dc2828;
+    --secondary-800: #7c1414;
+    --secondary-900: #400a0a;
+    --secondary-950: #2c0707;
+
+    /* UI Colors */
+    --background: 0 0% 98%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 88%;
+    --ring: 221.2 83.2% 53.3%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 3.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 15.5%;
+    --ring: 224.3 76.3% 48%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+  body {
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+}
+
+.dashboard-container {
+  padding-top: var(--spacing-8);
+  padding-bottom: var(--spacing-5);
+  padding-inline: var(--spacing-8);
+}
+
+.mapboxgl-popup-content {
+  background: var(--color-primary-700) !important;
+  border-radius: var(--radius-lg) !important;
+  padding-block: var(--spacing-2) !important;
+  padding-inline: var(--spacing-3) !important;
+}
+
+.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
+  border-bottom-color: var(--color-primary-700) !important;
+}
+
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+  border-top-color: var(--color-primary-700) !important;
+}
+
+.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+  border-right-color: var(--color-primary-700) !important;
+}
+
+.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+  border-left-color: var(--color-primary-700) !important;
+}
+
+.marker-popup {
+  background: var(--color-primary-700);
+  color: var(--color-white);
+  padding: 0;
+  margin: 0;
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.marker-popup-image {
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: cover;
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+}
+
+.marker-popup-price {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-primary-200);
+}
+
+.marker-popup-title {
+  color: var(--color-blue-300);
+  cursor: pointer;
+}
+
+.marker-popup-title:hover {
+  text-decoration: underline;
+}
+
+.marker-popup-title:focus {
+  outline: none;
+}
+
+.marker-popup-price-unit {
+  font-size: var(--text-xs);
+  color: var(--color-primary-500);
+  font-weight: 400;
+}
+
+/* scrollbar styling */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-200);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-300);
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+  body {
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+}
+
+/* Amplify UI Overrides */
+[data-amplify-authenticator] {
+  --amplify-components-button-primary-background-color: var(--primary);
+  --amplify-components-button-primary-hover-background-color: hsl(
+    var(--primary) / 0.9
+  );
+  --amplify-components-button-border-radius: var(--radius);
+  --amplify-components-fieldcontrol-border-radius: var(--radius);
+}
+
+[data-amplify-authenticator][data-variation="default"] {
+  height: 100%;
+  padding: 2rem !important;
+}
+
+[data-amplify-authenticator] [data-amplify-router] {
+  border: none !important;
+  box-shadow: none !important;
+  max-width: 400px !important;
+  margin: 0 auto;
+}
+
+[data-amplify-authenticator] [data-amplify-container] {
+  border-radius: var(--radius);
+  padding: 2rem !important;
+  border: 1px solid hsl(var(--border));
+}
+
+[data-amplify-authenticator] [data-amplify-form] {
+  padding: 0 !important;
+}
+
+[data-amplify-authenticator] .amplify-tabs__list {
+  display: none;
+}
+
+[data-amplify-authenticator] .amplify-button--primary {
+  width: 100%;
+  height: 2.75rem;
+  margin-top: 1rem;
+  background-color: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  font-weight: 500;
+  font-size: var(--text-sm);
+}
+
+[data-amplify-authenticator] .amplify-button--primary:hover {
+  background-color: hsl(var(--primary) / 0.8) !important;
+}
+
+[data-amplify-authenticator] .amplify-field-group__control {
+  border-color: hsl(var(--input));
+}
+
+[data-amplify-authenticator] .amplify-field-group__control:focus-within {
+  border-color: hsl(var(--ring)) !important;
+  box-shadow: 0 0 0 1px hsl(var(--ring)) !important;
+}
+
+[data-amplify-authenticator] .amplify-field__show-password {
+  color: hsl(var(--muted-foreground));
+}
+
+[data-amplify-authenticator] .amplify-label {
+  font-weight: 500;
+  color: hsl(var(--foreground));
+}
+
+[data-amplify-authenticator] .amplify-select {
+  border-color: hsl(var(--input));
+  border-radius: var(--radius);
+  height: 2.5rem;
+  font-size: var(--text-sm);
+}
+
+[data-amplify-authenticator] .amplify-text--error {
+  color: #ff0000;
+}
+
+/* Sonner Toast Styles */
+[data-close-button="true"] {
+  background: hsl(var(--background));
+  border-color: hsl(var(--border));
+  color: hsl(var(--foreground));
+}
+
+[data-close-button="true"]:hover {
+  background: hsl(var(--muted));
+}
