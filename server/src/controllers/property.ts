@@ -12,7 +12,10 @@ const s3Client = new S3Client({
   region: process.env.AWS_REGION,
 });
 
-export const getProperties = async (req: Request, res: Response) => {
+export const getProperties = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const {
       favoriteIds,
@@ -20,7 +23,7 @@ export const getProperties = async (req: Request, res: Response) => {
       priceMax,
       beds,
       baths,
-      proprtyType,
+      propertyType,
       squareFeetMin,
       squareFeetMax,
       amenities,
@@ -51,11 +54,11 @@ export const getProperties = async (req: Request, res: Response) => {
     }
 
     if (beds && beds !== "any") {
-      whereConditions.push(Prisma.sql`p."beds" >= ${Number(beds)}`);
+      whereConditions.push(Prisma.sql`p.beds >= ${Number(beds)}`);
     }
 
     if (baths && baths !== "any") {
-      whereConditions.push(Prisma.sql`p."baths" >= ${Number(baths)}`);
+      whereConditions.push(Prisma.sql`p.baths >= ${Number(baths)}`);
     }
 
     if (squareFeetMin) {
@@ -70,9 +73,9 @@ export const getProperties = async (req: Request, res: Response) => {
       );
     }
 
-    if (proprtyType && proprtyType !== "any") {
+    if (propertyType && propertyType !== "any") {
       whereConditions.push(
-        Prisma.sql`p."propertyType" = ${proprtyType}::"PropertyType"`
+        Prisma.sql`p."propertyType" = ${propertyType}::"PropertyType"`
       );
     }
 
@@ -89,8 +92,8 @@ export const getProperties = async (req: Request, res: Response) => {
         if (!isNaN(date.getTime())) {
           whereConditions.push(
             Prisma.sql`EXISTS (
-              SELECT 1 FROM "Lease" l
-              WHERE l."propertyId" = p.id
+              SELECT 1 FROM "Lease" l 
+              WHERE l."propertyId" = p.id 
               AND l."startDate" <= ${date.toISOString()}
             )`
           );
@@ -102,7 +105,7 @@ export const getProperties = async (req: Request, res: Response) => {
       const lat = parseFloat(latitude as string);
       const lng = parseFloat(longitude as string);
       const radiusInKilometers = 1000;
-      const degrees = radiusInKilometers / 111;
+      const degrees = radiusInKilometers / 111; // Converts kilometers to degrees
 
       whereConditions.push(
         Prisma.sql`ST_DWithin(
@@ -117,15 +120,15 @@ export const getProperties = async (req: Request, res: Response) => {
       SELECT 
         p.*,
         json_build_object(
-          "id", l.id,
-          "address", l.address,
-          "city", l.city,
-          "state", l.state,
-          "country", l.country,
-          "postalCode", l."postalCode",
-          "coordinates", json_build_object(
-            "longitude", ST_X(l."coordinates"::geometry),
-            "latitude", ST_Y(l."coordinates"::geometry)
+          'id', l.id,
+          'address', l.address,
+          'city', l.city,
+          'state', l.state,
+          'country', l.country,
+          'postalCode', l."postalCode",
+          'coordinates', json_build_object(
+            'longitude', ST_X(l."coordinates"::geometry),
+            'latitude', ST_Y(l."coordinates"::geometry)
           )
         ) as location
       FROM "Property" p
@@ -139,11 +142,11 @@ export const getProperties = async (req: Request, res: Response) => {
 
     const properties = await prisma.$queryRaw(completeQuery);
 
-    res.status(200).json(properties);
+    res.json(properties);
   } catch (error: any) {
     res
       .status(500)
-      .json({ message: "Error fetching properties" + error.message });
+      .json({ message: `Error retrieving properties: ${error.message}` });
   }
 };
 
