@@ -96,7 +96,7 @@ const FiltersFull = () => {
           <div className="flex items-center">
             <Input
               placeholder="Enter location"
-              value={filters.location}
+              value={localFilters.location}
               onChange={(e) =>
                 setLocalFilters((prev) => ({
                   ...prev,
@@ -107,7 +107,7 @@ const FiltersFull = () => {
             />
             <Button
               onClick={handleLocationSearch}
-              className="rounded-r-xl rounded-l-none border-l-none border-black shadow-none border hover:bg-(--primary-700) hover:text-(--primary-50)"
+              className="rounded-r-xl cursor-pointer rounded-l-none border-l-none border-black shadow-none border hover:bg-(--primary-700) hover:text-(--primary-50)"
             >
               <Search className="w-4 h-4" />
             </Button>
