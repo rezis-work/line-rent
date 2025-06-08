@@ -38,7 +38,7 @@ const AppSidebar = ({ userType }: AppSidebarProps) => {
           { icon: Settings, label: "Settings", href: "/managers/settings" },
         ]
       : [
-          { icon: Heart, label: "Favorites", href: "/tenants/favorites" },
+          { icon: Heart, label: "Favorites", href: "/tenants/favourites" },
           {
             icon: FileText,
             label: "Applications",

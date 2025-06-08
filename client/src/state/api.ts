@@ -1,5 +1,5 @@
 import { cleanParams, createNewUserInDatabase } from "@/lib/utils";
-import { Manager, Property, Tenant } from "@/types/prismaTypes";
+import { Lease, Manager, Payment, Property, Tenant } from "@/types/prismaTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth";
 import { FiltersState } from ".";
@@ -17,7 +17,14 @@ export const api = createApi({
     },
   }),
   reducerPath: "api",
-  tagTypes: ["Tenants", "Managers", "Properties", "PropertyDetails"],
+  tagTypes: [
+    "Tenants",
+    "Managers",
+    "Properties",
+    "PropertyDetails",
+    "Leases",
+    "Payments",
+  ],
   endpoints: (build) => ({
     getAuthUser: build.query<User, void>({
       queryFn: async (_, _queryApi, _extraOptions, fetchWithBQ) => {
@@ -125,6 +132,17 @@ export const api = createApi({
       providesTags: (result) => [{ type: "Tenants", id: result?.id }],
     }),
 
+    getCurrentResidences: build.query<Property[], string>({
+      query: (cognitoId) => `tenants/${cognitoId}/residences`,
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "Properties" as const, id })),
+              { type: "Properties", id: "LIST" },
+            ]
+          : [{ type: "Properties", id: "LIST" }],
+    }),
+
     addFavoriteProperty: build.mutation<
       Tenant,
       { cognitoId: string; propertyId: number }
@@ -151,6 +169,46 @@ export const api = createApi({
         { type: "Properties", id: "LIST" },
       ],
     }),
+
+    // manager endpoint
+    getManagerProperties: build.query<Property[], string>({
+      query: (cognitoId) => `managers/${cognitoId}/properties`,
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "Properties" as const, id })),
+              { type: "Properties", id: "LIST" },
+            ]
+          : [{ type: "Properties", id: "LIST" }],
+    }),
+
+    createProperty: build.mutation<Property, FormData>({
+      query: (newProperty) => ({
+        url: `/properties`,
+        method: "POST",
+        body: newProperty,
+      }),
+      invalidatesTags: (result) => [
+        { type: "Properties", id: "LIST" },
+        { type: "Managers", id: result?.managerId },
+      ],
+    }),
+
+    // lease endpoints
+    getLeases: build.query<Lease[], number>({
+      query: () => `leases`,
+      providesTags: ["Leases"],
+    }),
+
+    getPropertyLeases: build.query<Lease[], number>({
+      query: (propertyId) => `properties/${propertyId}/leases`,
+      providesTags: ["Leases"],
+    }),
+
+    getPayments: build.query<Payment[], number>({
+      query: (leaseId) => `leases/${leaseId}/payments`,
+      providesTags: ["Payments"],
+    }),
   }),
 });
 
@@ -163,4 +221,10 @@ export const {
   useRemoveFavoritePropertyMutation,
   useGetTenantQuery,
   useGetPropertyQuery,
+  useGetCurrentResidencesQuery,
+  useGetLeasesQuery,
+  useGetPaymentsQuery,
+  useGetManagerPropertiesQuery,
+  useGetPropertyLeasesQuery,
+  useCreatePropertyMutation,
 } = api;

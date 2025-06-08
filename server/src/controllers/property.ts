@@ -189,8 +189,13 @@ export const getProperty = async (req: Request, res: Response) => {
   }
 };
 
-export const createProperty = async (req: Request, res: Response) => {
+export const createProperty = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
+    console.log(req.body);
+    console.log("req.files:", req.files);
     const files = req.files as Express.Multer.File[];
     const {
       address,
@@ -202,44 +207,44 @@ export const createProperty = async (req: Request, res: Response) => {
       ...propertyData
     } = req.body;
 
-    const photoUrls = await Promise.all(
-      files.map(async (file) => {
-        const uploadParams = {
-          Bucket: process.env.S3_BUCKET_NAME!,
-          Key: `properties/${Date.now()}-${file.originalname}`,
-          Body: file.buffer,
-          ContentType: file.mimetype,
-        };
+    // const photoUrls = await Promise.all(
+    //   files.map(async (file) => {
+    //     const uploadParams = {
+    //       Bucket: process.env.S3_BUCKET_NAME!,
+    //       Key: `properties/${Date.now()}-${file.originalname}`,
+    //       Body: file.buffer,
+    //       ContentType: file.mimetype,
+    //     };
 
-        const uploadResult = await new Upload({
-          client: s3Client,
-          params: uploadParams,
-        }).done();
+    //     const uploadResult = await new Upload({
+    //       client: s3Client,
+    //       params: uploadParams,
+    //     }).done();
 
-        return uploadResult.Location;
-      })
-    );
+    //     return uploadResult.Location;
+    //   })
+    // );
 
     const geocodingUrl = `https://nominatim.openstreetmap.org/search?${new URLSearchParams(
       {
         street: address,
         city,
-        postalCode: postalCode,
+        country,
+        postalcode: postalCode,
         format: "json",
         limit: "1",
       }
     ).toString()}`;
-
     const geocodingResponse = await axios.get(geocodingUrl, {
       headers: {
-        "User-Agent": "LineStateApp (rkrkaranadze@gmail.com)",
+        "User-Agent": "RealEstateApp (justsomedummyemail@gmail.com",
       },
     });
     const [longitude, latitude] =
       geocodingResponse.data[0]?.lon && geocodingResponse.data[0]?.lat
         ? [
-            parseFloat(geocodingResponse.data[0].lon),
-            parseFloat(geocodingResponse.data[0].lat),
+            parseFloat(geocodingResponse.data[0]?.lon),
+            parseFloat(geocodingResponse.data[0]?.lat),
           ]
         : [0, 0];
 
@@ -247,13 +252,14 @@ export const createProperty = async (req: Request, res: Response) => {
     const [location] = await prisma.$queryRaw<Location[]>`
       INSERT INTO "Location" (address, city, state, country, "postalCode", coordinates)
       VALUES (${address}, ${city}, ${state}, ${country}, ${postalCode}, ST_SetSRID(ST_MakePoint(${longitude}, ${latitude}), 4326))
-      RETURNING id, address, city, state, country, "postalCode", ST_AsText(coordinates) as coordinates
+      RETURNING id, address, city, state, country, "postalCode", ST_AsText(coordinates) as coordinates;
     `;
 
+    // create property
     const newProperty = await prisma.property.create({
       data: {
         ...propertyData,
-        photoUrls,
+        // photoUrls,
         locationId: location.id,
         managerCognitoId,
         amenities:
@@ -280,9 +286,9 @@ export const createProperty = async (req: Request, res: Response) => {
     });
 
     res.status(201).json(newProperty);
-  } catch (error: any) {
+  } catch (err: any) {
     res
       .status(500)
-      .json({ message: "Error creating property " + error.message });
+      .json({ message: `Error creating property: ${err.message}` });
   }
 };
