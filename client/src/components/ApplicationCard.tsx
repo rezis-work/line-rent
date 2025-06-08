@@ -28,7 +28,7 @@ const ApplicationCard = ({
         <div className="flex flex-col lg:flex-row gap-5 w-full lg:w-auto">
           <Image
             src={imgSrc}
-            alt={application.property.name}
+            alt={application?.property.name || "Property Image"}
             width={200}
             height={150}
             className="rounded-xl object-cover w-full lg:w-[200px] h-[150px]"
@@ -38,15 +38,15 @@ const ApplicationCard = ({
           <div className="flex flex-col justify-between">
             <div>
               <h2 className="text-xl font-bold my-2">
-                {application.property.name}
+                {application?.property.name}
               </h2>
               <div className="flex items-center mb-2">
                 <MapPin className="w-5 h-5 mr-1" />
-                <span>{`${application.property.location.city}, ${application.property.location.country}`}</span>
+                <span>{`${application?.property.location.city}, ${application?.property.location.country}`}</span>
               </div>
             </div>
             <div className="text-xl font-semibold">
-              ${application.property.pricePerMonth}{" "}
+              ${application?.property.pricePerMonth}{" "}
               <span className="text-sm font-normal">/ month</span>
             </div>
           </div>
@@ -97,21 +97,21 @@ const ApplicationCard = ({
             <div>
               <Image
                 src="/landing-i1.png"
-                alt={contactPerson.name}
+                alt={contactPerson?.name || "Contact Person Image"}
                 width={40}
                 height={40}
                 className="rounded-full mr-2 min-w-[40px] min-h-[40px]"
               />
             </div>
             <div className="flex flex-col gap-2">
-              <div className="font-semibold">{contactPerson.name}</div>
+              <div className="font-semibold">{contactPerson?.name}</div>
               <div className="text-sm flex items-center text-primary-600">
                 <PhoneCall className="w-5 h-5 mr-2" />
-                {contactPerson.phoneNumber}
+                {contactPerson?.phoneNumber}
               </div>
               <div className="text-sm flex items-center text-primary-600">
                 <Mail className="w-5 h-5 mr-2" />
-                {contactPerson.email}
+                {contactPerson?.email}
               </div>
             </div>
           </div>
